@@ -179,11 +179,4 @@ $ kafka-console-consumer --bootstrap-server localhost:9092 --topic TRAFFIC_ENRIC
 ```
 
 ## MuleSoft Consumer
-Please refer to the this page to configure the MuleSoft Consumer.
-
-```bash
-```
-
-
-```bash
-```
+Please refer to the this [page](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/mule/README.md) to configure the MuleSoft Consumer.
