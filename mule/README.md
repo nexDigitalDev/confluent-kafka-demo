@@ -7,7 +7,7 @@ By following this tutorial, you will be able to consume Kafka messages from Mule
 Soap responses and requests will be logged into **/your/preferred/path/logs** directory.
 
 At the end of this guide, you will have a flow like :
-![Mule Schema](img/schema.png)
+![Mule Schema](img/schema.PNG)
 
 ## Pre-requisite
 Before starting the guide, make sure that :
@@ -20,10 +20,13 @@ Before starting the guide, make sure that :
 
 This part is optional if you have already a running Soap Server. 
 
-Open Soap UI and create a new SOAP Project. Pass the **/your/preferred/path/confluent-kafka-demo/mule/airbus-hello.wsdl**
+Open Soap UI and create a new SOAP Project using the wsdl file at **/your/preferred/path/confluent-kafka-demo/mule/airbus-hello.wsdl**.
 
+Click on **Hello_Binding** and create a MockService with **path** configured to **/SayHello** on the port **9099**.
 
+![Soap UI](img/soapui.PNG)
 
+Click on the Mock Service that you created and run it.
 
 
 ## Configuring MuleSoft
