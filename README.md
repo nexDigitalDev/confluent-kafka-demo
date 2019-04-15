@@ -100,12 +100,15 @@ csv.first.row.as.header=true
 > Don't forget to replace the paths to source, finished and error directories in the above file.
 
 
-Navigate to the **/your/preferred/path/kafka/kafka-connect-spooldir** and execute the following commands :
+Navigate to the **/your/preferred/path/kafka/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/kafka/source/yourFile.csv** to generate the Avro Schema of the data in this file:
 ```bash
 $ export CLASSPATH="$(find target/kafka-connect-target/usr/share/kafka-connect/kafka-connect-spooldir/ -type f -name '*.jar' | tr '\n' ':')"
 
 $ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator -t csv -f /your/preferred/path/kafka/source/yourFile.csv -c /your/preferred/path/kafka/spool_conf.tmp
 
 ```
-> Do not forget to replace the path to your **spool_conf.tmp** and your CSV file in the above commands.
+> Do not forget to replace the path to your **spool_conf.tmp** and **your CSV file** in the above commands.
 
+## Demo
+
+First, clone the current git repository to your own 

@@ -3,7 +3,7 @@
 #clean Directories and log files
 
 
-KAFKA_DIR=/your/preferred/path/kafka
+KAFKA_DIR=/your/preferred/path/confluent-kafka-demo
 
 FINISHED=$KAFKA_DIR/finished
 SOURCE=$KAFKA_DIR/source
