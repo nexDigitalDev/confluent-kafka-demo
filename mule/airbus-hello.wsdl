@@ -1,0 +1,61 @@
+<wsdl:definitions name = "HelloService"
+   targetNamespace = "http://www.examples.com/wsdl/HelloService.wsdl"
+   xmlns = "http://schemas.xmlsoap.org/wsdl/"
+   xmlns:soap = "http://schemas.xmlsoap.org/wsdl/soap/"
+   xmlns:tns = "http://www.examples.com/wsdl/HelloService.wsdl"
+   xmlns:xsd = "http://www.w3.org/2001/XMLSchema"
+   xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ 
+   <wsdl:message name = "SayHelloRequest">
+	<wsdl:part name = "date" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "vol" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "depart" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "arrivee" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "appareil" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "distance" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "type" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "aircraft" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "longueur" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "autonomie" type = "xsd:string" xsi:nil="true"/>
+	<wsdl:part name = "passagers" type = "xsd:string" xsi:nil="true"/>
+   </wsdl:message>
+	
+   <wsdl:message name = "SayHelloResponse">
+      <wsdl:part name = "success" type = "xsd:string"/>
+   </wsdl:message>
+
+   <wsdl:portType name = "Hello_PortType">
+      <wsdl:operation name = "sayHello">
+         <wsdl:input message = "tns:SayHelloRequest"/>
+         <wsdl:output message = "tns:SayHelloResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name = "Hello_Binding" type = "tns:Hello_PortType">
+      <soap:binding style="document"
+         transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name = "sayHello">
+         <soap:operation soapAction = "sayHello"/>
+
+         <wsdl:input>
+		<soap:body use="literal" message="tns:SayHelloRequest"/>
+                <soap:header use="literal" part="header"/>
+	 </wsdl:input>
+
+		
+         <wsdl:output>
+		 <soap:body use="literal" message = "tns:SayHelloResponse" />
+                <soap:header use="literal" part="header"/>
+	 </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name = "Hello_Service">
+      <wsdl:documentation>WSDL File for HelloService</wsdl:documentation>
+      <wsdl:port binding = "tns:Hello_Binding" name = "Hello_Port">
+         <soap:address
+            location = "http://127.0.0.1:9099/SayHello/" />
+      </wsdl:port>
+   </wsdl:service>
+</wsdl:definitions>
