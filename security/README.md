@@ -146,7 +146,7 @@ demo
 ```
 > Don't forget to modify the path !
 
-Now you have the basics to play security on Confluent. You can jump directly to the [Authorization and ACLs](https://github.com/nexDigitalDev/confluent-kafka-demo/authorisation-and-acls) section to see how to set up autorisations with Kafka ACLs.
+Now you have the basics to play security on Confluent. You can jump directly to the [Authorization and ACLs](https://github.com/nexDigitalDev/confluent-kafka-demo/tree/master/security#authorization-and-acls) section to see how to set up autorisations with Kafka ACLs.
 
 You can also secure Kafka Connect, KSQL, Control Center, Schema Registry and REST Proxy which are also Kafka Clients in the following parts. The basic is quite similar which consists in passing SSL certificates and SASL configurations in the properties files.
 
