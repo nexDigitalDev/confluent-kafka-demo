@@ -2,18 +2,23 @@
 
 
 
-Demonstration of the confluent kafka distribution with file connector (spooldir), ksql, muleSoft kafka connector. Possibility to activate the security or to deploy on a k8s cluster.
+Demonstration of the Confluent/Kafka distribution with a file connector (Spooldir), KSQL, MuleSoft Kafka connector. You can activate the security or deploy it on a K8s cluster.
 
-This demo will contain several parts: Confluent Installation and Configuration, Connectors Installation and Configuration, KSQL, MuleSoft Configuration and Security Configuration.
+This demo contains several parts:
 
-The use case of this demo is quite simple. It consists in activating 2 SpoolDir cnnectors which will transform the file in the defined source directory into Kafka messages.
+    - Confluent installation and configuration
+    - Connectors installation and configuration
+    - KSQL configuration
+    - MuleSoft configuration
+    - Security configuration.
+
+The example this demo gives consists in activating 2 SpoolDir connectors which will transform a file located in a defined source directory into Kafka messages.
 
 ## Confluent Installation
 
-#### 		Local Installation For Ubuntu and Debian System
+#### 		Local Installation for Ubuntu and Debian systems
 
-Install the Confluent public key. This key is used to sign the packages in the APT
-repository.
+Get the Confluent public key and add it to APT Key management utility. This key is used to sign the packages in the APT repository.
 
 ```bash
 $ wget -qO - https://packages.confluent.io/deb/5.1/archive.key | sudo apt-key add -
@@ -25,7 +30,7 @@ Add the repository to your **/etc/apt/sources.list** file by running this comman
 $ add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/5.1 stable main"
 ```
 
-Update apt-get and install the entire Confluent Platform platform.
+Update apt-get and install the entire Confluent Platform.
 
 ```bash
 $ apt-get update && sudo apt-get install confluent-platform-2.11
@@ -35,14 +40,14 @@ Please refer to this [page](https://docs.confluent.io/current/installation/insta
 
 #### 		Configuration
 
-Navigate to the ZooKeeper properties file **/etc/kafka/zookeeper.properties** and modify as shown.
+Navigate to the ZooKeeper properties file **/etc/kafka/zookeeper.properties** and modify it to match the lines below.
 
 ```
 dataDir=/var/lib/zookeeper/
 clientPort=2181
 ```
 
-Navigate to the Kafka properties file **/etc/kafka/server.properties** and customize the following:
+Navigate to the Kafka properties file **/etc/kafka/server.properties** and set the following lines:
 
 ```bash
 zookeeper.connect=localhost:2181
@@ -58,9 +63,9 @@ broker.id.generation.enable=true
 $ confluent start
 ```
 
-## Clone the current Repository
+## Clone this repository
 
-Clone the current repository to **/your/preferred/path** :
+Clone this repository to **/your/preferred/path** :
 ```bash
 $ git clone https://github.com/nexDigitalDev/confluent-kafka-demo
 $ cd confluent-kafka-demo
@@ -97,19 +102,20 @@ $ mkdir /your/preferred/path/confluent-kafka-demo/logs
 
 This part is **optional** if you want to know how to generate Avro Schema which is used when adding the connectors in the next part. 
 
-**It requires that you installed the spooldir connector with git**. However, if you installed the connector with Confluent Hub, you can either define the Avro schema manually or looking for online Json - Avro converter.
+**This requires that you installed the spooldir connector with git**.  
+However, if you installed the connector with Confluent Hub, you can either define the Avro schema manually or looking for online Json - Avro converter.
 
-First, create the configuration file at **/your/preferred/path/confluent-kafka-demo/spool_conf.tmp** which contains : 
+First, create the configuration file at **/your/preferred/path/confluent-kafka-demo/spool_conf.tmp** which should contain : 
 ```
 input.path=/your/preferred/path/confluent-kafka-demo/source
 finished.path=/your/preferred/path/confluent-kafka-demo/finished
 error.path=/your/preferred/path/confluent-kafka-demo/error
 csv.first.row.as.header=true
 ```
-> Don't forget to replace the paths to source, finished and error directories in the above file.
+> Don't forget to replace the paths in each of the lines above by the one you set instead of `/your/preferred/path/`.
 
 
-Navigate to the **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/source/yourFile.csv** to generate the Avro Schema of the data in this file:
+Navigate to the **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/source/yourFile.csv** to generate the Avro Schema based on the data in this file:
 ```bash
 $ export CLASSPATH="$(find target/kafka-connect-target/usr/share/kafka-connect/kafka-connect-spooldir/ -type f -name '*.jar' | tr '\n' ':')"
 
@@ -131,11 +137,11 @@ Modify the script **/your/preferred/path/confluent-kafka-demo/scripts/demo-insta
 # Modify the access path to the confluent-kafka-demo directory
 KAFKA_DIR=/your/preferred/path/confluent-kafka-demo 
 ```
-After that, launch the script for running the demo :
+After that, execute the script for installing the demo :
 ```bash
 $ ./scripts/demo-install.sh
 ```
-This script will add the connectors for referential data and streaming data. The connectors will transform the CSV files into kafka messages and add them to **aircraft** and **traffic** topics. Intermediate KSQL streams and tables are also created to 
+This script will add the connectors for referential data and streaming data. The connectors will transform the CSV files into Kafka messages and add them to **aircraft** and **traffic** topics. Intermediate KSQL streams and tables are also created to ???
 
 ## KSQL
 
@@ -150,7 +156,7 @@ Select the stream **TRAFFIC_ENRICHED** created with the previous scrip **demo-in
 ```bash
 SELECT * FROM TRAFFIC_ENRICHED;
 ```
-> If you want to select all data from the beginning, before executing the above command, run \n
+> If you want to select all data from the beginning, before executing the above command, run  
 **SET 'auto.offset.reset'='earliest';** in the KSQL command lines.
 
 Open another terminal, and place a new streaming traffic data with the following command. You will see in the terminal running KSQL that there is a new input data.
