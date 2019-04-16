@@ -142,7 +142,9 @@ After that, execute the script for installing the demo :
 ```bash
 $ ./scripts/demo-install.sh
 ```
-This script will add the connectors for referential data and streaming data. The connectors will transform the CSV files into Kafka messages and add them to **aircraft** and **traffic** topics. Intermediate KSQL streams and tables are also created to ???
+This script will add the connectors for referential and streaming data. The connectors will transform the CSV files into kafka messages and add them to **'aircraft'** and **'traffic'** topics. 
+
+Intermediate KSQL streams and tables are also created in order to rekey messages by partioning. After that, a new stream **TRAFFIC_ENRICHED** and its corresponding topic are created based on the jointure of the **'AIRCRAFT_TABLE_KEY'** table and the **'TRAFFIC_KEY'** stream.
 
 ## KSQL
 
@@ -154,11 +156,11 @@ $ ksql
 
 Select the stream **TRAFFIC_ENRICHED** created with the previous scrip **demo-install.sh**. 
 
-```bash
-SELECT * FROM TRAFFIC_ENRICHED;
+```sql
+$ SELECT * FROM TRAFFIC_ENRICHED;
 ```
-> If you want to select all data from the beginning, before executing the above command, run  
-**SET 'auto.offset.reset'='earliest';** in the KSQL command lines.
+> If you want to select all data from the beginning, before executing the above command, <br> run 
+ **SET 'auto.offset.reset'='earliest';**  in the KSQL terminal.
 
 Open another terminal, and place a new streaming traffic data with the following command. You will see in the terminal running KSQL that there is a new input data.
 
@@ -191,4 +193,4 @@ Please refer to the this [page](https://github.com/nexDigitalDev/confluent-kafka
 
 ## Configuring Security
 
-Please refer to this [page](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/security/README.md)
+Please refer to this [page](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/security/README.md) to set up the security.
