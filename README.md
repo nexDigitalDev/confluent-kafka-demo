@@ -101,7 +101,7 @@ You can either download the connector with Confluent Hub using the following com
 ```bash
 $ sudo confluent-hub install jcustenborder/kafka-connect-spooldir:1.0.37
 ```
-Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** with git (you will need **Maven** and a **JDK**) :
+Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/plugin/kafka-connect-spooldir** with git (you will need **Maven** and a **JDK**) :
 
 > `mvn` comes from the Maven package, you can install it with the following command `sudo apt-get install maven -y`
 
@@ -126,8 +126,8 @@ $ cd /your/preferred/path/confluent-kafka-demo && mkdir source finished error lo
 
 #### Schema Generation
 
-This part is **optional**  
-Read it if you want to know how to generate Avro Schema which are used when adding the connectors in the next part. 
+This part is **optional.**  
+Read it if you want to know how to generate Avro schemas which are used when adding the connectors in the next part. 
 
 **This requires that you installed the spooldir connector with git**.  
 However, if you installed the connector with Confluent Hub, you can either define the Avro schema manually or looking for online Json - Avro converter.
@@ -154,11 +154,11 @@ $ confluent start
 ```
 
 
-Navigate to the **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/data/yourFile.csv** to generate the Avro Schema based on the data in this file:
+Navigate to the **/your/preferred/path/confluent-kafka-demo/plugin/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_0.csv** to generate the Avro Schema based on the data in this file:
 ```bash
 $ export CLASSPATH="$(find target/kafka-connect-target/usr/share/kafka-connect/kafka-connect-spooldir/ -type f -name '*.jar' | tr '\n' ':')"
 
-$ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator -t csv -f /your/preferred/path/confluent-kafka-demo/data/[yourFile.csv] -c /your/preferred/path/confluent-kafka-demo/spool_conf.tmp
+$ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator -t csv -f /your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_0.csv -c /your/preferred/path/confluent-kafka-demo/spool_conf.tmp
 
 ```
 > Don't forget to replace the path to your **spool_conf.tmp** and **aircraft_airbus_airfrance_0.csv** files in the above commands.
