@@ -14,6 +14,12 @@ This demo contains several parts:
 
 The example this demo gives consists in activating 2 SpoolDir connectors which will transform a file located in a defined source directory into Kafka messages.
 
+## Requirement
+
+- For system requirements, please refer to this [page](https://docs.confluent.io/current/installation/system-requirements.html).
+- Java 1.8 is required
+
+
 ## Confluent Installation
 
 #### 		Local Installation for Ubuntu and Debian systems
@@ -95,13 +101,14 @@ You can either download the connector with Confluent Hub using the following com
 ```bash
 $ sudo confluent-hub install jcustenborder/kafka-connect-spooldir:1.0.37
 ```
-Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** with git (you will need Maven and a JDK) :
+Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** with git (you will need **Maven** and a **JDK**) :
 
 > `mvn` comes from the Maven package, you can install it with the following command `sudo apt-get install maven -y`
 
 > If you just installed Maven you might also need to install a JDK using the following command `sudo apt-get install default-jdk -y`
 
 ```bash
+$ mkdir plugins && cd plugins
 $ git clone https://github.com/jcustenborder/kafka-connect-spooldir.git
 $ cd kafka-connect-spooldir
 $ mvn clean package
@@ -132,41 +139,60 @@ finished.path=/your/preferred/path/confluent-kafka-demo/finished
 error.path=/your/preferred/path/confluent-kafka-demo/error
 csv.first.row.as.header=true
 ```
+If you installed the connector with Git, modify the **plugin.path** configuration in those four files : 
+<br>- **/etc/kafka/connect-distributed.properties** <br>- **/etc/kafka/connect-standalone.properties** <br>- **/etc/schema-registry/connect-avro-distributed.properties**
+<br>- **/etc/schema-registry/connect-avro-standalone.properties**
+```properties
+plugin.path=/usr/share/java, /your/preferred/path/confluent-kafka-demo/plugins/kafka-connect-spooldir/target/kafka-connect-target/usr/share/kafka-connect/
+```
+> Don't forget to replace the paths in each of the lines above by the one you set instead of **/your/preferred/path/**.
 
-Then, in **/your/preferred/path/confluent-kafka-demo/csv-source-traffic.config** and **/your/preferred/path/confluent-kafka-demo/csv-source-aircraft.config** change thoses lines in both files:
-
-```json
-"input.path": "/your/preferred/path/confluent-kafka-demo/source",
-"finished.path": "/your/preferred/path/confluent-kafka-demo/finished",
-"error.path": "/your/preferred/path/confluent-kafka-demo/error",
+After modifying configuration files, restart confluent :
+```bash
+$ confluent stop
+$ confluent start
 ```
 
-> Don't forget to replace the paths in each of the lines above by the one you set instead of `/your/preferred/path/`.
 
-
-Navigate to the **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/source/yourFile.csv** to generate the Avro Schema based on the data in this file:
+Navigate to the **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/data/yourFile.csv** to generate the Avro Schema based on the data in this file:
 ```bash
 $ export CLASSPATH="$(find target/kafka-connect-target/usr/share/kafka-connect/kafka-connect-spooldir/ -type f -name '*.jar' | tr '\n' ':')"
 
 $ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator -t csv -f /your/preferred/path/confluent-kafka-demo/data/[yourFile.csv] -c /your/preferred/path/confluent-kafka-demo/spool_conf.tmp
 
 ```
-> Don't forget to replace the path to your **spool_conf.tmp** and **your CSV file** in the above commands.
+> Don't forget to replace the path to your **spool_conf.tmp** and **aircraft_airbus_airfrance_0.csv** files in the above commands.
 
 ## Set up the Demo
 
-Navigate to the **/your/preferred/path/confluent-kafka-demo**.
+Navigate to **/your/preferred/path/confluent-kafka-demo/scripts**.
 ```bash
-$ cd /your/preferred/path/confluent-kafka-demo
+$ cd /your/preferred/path/confluent-kafka-demo/scripts
 ```
 
-Modify the script **/your/preferred/path/confluent-kafka-demo/scripts/demo-install.sh** by modifying the **KAFKA_DIR** variable :
+Modify the script **demo-install.sh** by modifying the "**KAFKA_DIR**" variable :
 
 ```bash
 # Modify the access path to the confluent-kafka-demo directory
 KAFKA_DIR=/your/preferred/path/confluent-kafka-demo 
 ```
-After that, execute the script for installing the demo :
+
+Modify the paths variables ("**input.path**", "**finished.path**" and "**error.path**") in the two connector configuration files **csv-source-traffic.config** and **csv-source-aircraft.config** :
+```bash
+{
+    ...
+    "config":{
+        ...
+        "input.path": "/your/preferred/path/confluent-kafka-demo/source",
+        "finished.path": "/your/preferred/path/confluent-kafka-demo/finished",
+        "error.path": "/your/preferred/path/confluent-kafka-demo/error",
+        ...
+        }
+    ...
+}
+```
+
+After that, launch the script for installing the demo as root :
 ```bash
 $ sudo ./scripts/demo-install.sh
 ```
@@ -175,7 +201,7 @@ $ sudo ./scripts/demo-install.sh
 
 This script will add the connectors for referential and streaming data. The connectors will transform the CSV files into kafka messages and add them to **'aircraft'** and **'traffic'** topics. 
 
-Intermediate KSQL streams and tables are also created in order to rekey messages by partioning. After that, a new stream **TRAFFIC_ENRICHED** and its corresponding topic are created based on the jointure of the **'AIRCRAFT_TABLE_KEY'** table and the **'TRAFFIC_KEY'** stream.
+Intermediate KSQL streams and tables are also created in order to rekey messages by partioning. After that, a new stream **TRAFFIC_ENRICHED** and its corresponding topic are created based on the jointure of the **AIRCRAFT_TABLE_KEY** table and the **TRAFFIC_KEY** stream.
 
 ## KSQL
 
@@ -185,20 +211,24 @@ Open the KSQL by typing the following command in the terminal :
 $ ksql
 ```
 
-Select the stream **TRAFFIC_ENRICHED** created with the previous scrip **demo-install.sh**. 
+In the installation script  **demo-install.sh**, some data were send trough the connectors. To visualise those Kafka messages with KSQL you can select the **TRAFFIC_ENRICHED** stream using the following commands : 
 
-> If you want to select all data from the beginning, before executing the above command, <br> run 
- **SET 'auto.offset.reset'='earliest';**  in the KSQL terminal. Then :
 ```sql
+$ SET 'auto.offset.reset'='earliest';
 $ SELECT * FROM TRAFFIC_ENRICHED;
 ```
+> The first command is aimed to select messages from the beginning.
 
-Open another terminal, and place a new streaming traffic data with the following command. You will see in the terminal running KSQL that there is a new input data.
+Now, let's see what happens if you add new input data to this stream. Keep this KSQL terminal running and in another terminal execute the following command :
 
 ```bash
 $ cp /your/preferred/path/confluent-kafka-demo/data/Flight_Log_Paris_demoUpdateBEFORE02fev_2019.csv /your/preferred/path/confluent-kafka-demo/source/
 ```
 > Don't forget to replace the path in the above command !
+
+You will see in the terminal running KSQL that there is a new input data.
+
+<br>
 
 Now let's update a referential data and see if the new input stream will be updated.
 
@@ -212,7 +242,9 @@ Normally, in the KSQL Terminal, you will see that the same stream traffic has no
 
 ## Console Producer and Consumer 
 
-Instead of using KSQL, you can either use the console producer or consumer to consume or produce messages. For example, you can use the console consumer to observe the messages of **TRAFFIC_ENRICHED** : 
+Instead of using KSQL, you can either use the console producer or consumer to consume or produce messages. If you use console producer, be aware that your input data has the same data structure as defined in the connector configuration file. 
+
+For example, you can use the console consumer to observe the messages of **TRAFFIC_ENRICHED** : 
 
 ```bash
 $ kafka-console-consumer --bootstrap-server localhost:9092 --topic TRAFFIC_ENRICHED --from-beginning --formatter kafka.tools.DefaultMessageFormatter --property print.key=true --property print.value=true  --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
