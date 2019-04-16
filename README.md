@@ -27,13 +27,13 @@ $ wget -qO - https://packages.confluent.io/deb/5.1/archive.key | sudo apt-key ad
 Add the repository to your **/etc/apt/sources.list** file by running this command:
 
 ```bash
-$ add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/5.1 stable main"
+$ sudo add-apt-repository "deb [arch=amd64] https://packages.confluent.io/deb/5.1 stable main"
 ```
 
 Update apt-get and install the entire Confluent Platform.
 
 ```bash
-$ apt-get update && sudo apt-get install confluent-platform-2.11
+$ sudo apt-get update && sudo apt-get install confluent-platform-2.11 -y
 ```
 
 Please refer to this [page](https://docs.confluent.io/current/installation/installing_cp/index.html) for other installation methods.
@@ -50,11 +50,22 @@ clientPort=2181
 Navigate to the Kafka properties file **/etc/kafka/server.properties** and set the following lines:
 
 ```bash
-zookeeper.connect=localhost:2181
 ############################# Server Basics #############################
 # The ID of the broker. This must be set to a unique integer for each broker.
-#broker.id=0
+# broker.id=0
 broker.id.generation.enable=true
+
+...
+...
+
+############################# Zookeeper #############################
+
+# Zookeeper connection string (see zookeeper docs for details).
+# This is a comma separated host:port pairs, each corresponding to a zk
+# server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
+# You can also append an optional chroot string to the urls to specify the
+# root directory for all kafka znodes.
+zookeeper.connect=localhost:2181
 ```
 
 #### 		Start Confluent Platform
@@ -82,20 +93,28 @@ Before starting this part, make sure that you are in the directory **/your/prefe
 You can either download the connector with Confluent Hub using the following command :
 
 ```bash
-$ confluent-hub install jcustenborder/kafka-connect-spooldir:1.0.37
+$ sudo confluent-hub install jcustenborder/kafka-connect-spooldir:1.0.37
 ```
-Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** with git :
+Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/kafka-connect-spooldir** with git (you will need Maven and a JDK) :
+
+> `mvn` comes from the Maven package, you can install it with the following command `sudo apt-get install maven -y`
+
+> If you just installed Maven you might also need to install a JDK using the following command `sudo apt-get install default-jdk -y`
+
 ```bash
 $ git clone https://github.com/jcustenborder/kafka-connect-spooldir.git
 $ cd kafka-connect-spooldir
 $ mvn clean package
 ```
+
 Once you downloaded the connector manually or with Confluent Hub, create the following directories :
 ```bash
 $ mkdir /your/preferred/path/confluent-kafka-demo/source
 $ mkdir /your/preferred/path/confluent-kafka-demo/finished
 $ mkdir /your/preferred/path/confluent-kafka-demo/error
 $ mkdir /your/preferred/path/confluent-kafka-demo/logs
+# Or in one line
+$ cd /your/preferred/path/confluent-kafka-demo && mkdir source finished error logs
 ```
 
 #### Schema Generation
@@ -113,6 +132,15 @@ finished.path=/your/preferred/path/confluent-kafka-demo/finished
 error.path=/your/preferred/path/confluent-kafka-demo/error
 csv.first.row.as.header=true
 ```
+
+Then, in **/your/preferred/path/confluent-kafka-demo/csv-source-traffic.config** and **/your/preferred/path/confluent-kafka-demo/csv-source-aircraft.config** change thoses lines in both files:
+
+```json
+"input.path": "/your/preferred/path/confluent-kafka-demo/source",
+"finished.path": "/your/preferred/path/confluent-kafka-demo/finished",
+"error.path": "/your/preferred/path/confluent-kafka-demo/error",
+```
+
 > Don't forget to replace the paths in each of the lines above by the one you set instead of `/your/preferred/path/`.
 
 
@@ -120,7 +148,7 @@ Navigate to the **/your/preferred/path/confluent-kafka-demo/kafka-connect-spoold
 ```bash
 $ export CLASSPATH="$(find target/kafka-connect-target/usr/share/kafka-connect/kafka-connect-spooldir/ -type f -name '*.jar' | tr '\n' ':')"
 
-$ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator -t csv -f /your/preferred/path/confluent-kafka-demo/source/yourFile.csv -c /your/preferred/path/confluent-kafka-demo/spool_conf.tmp
+$ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator -t csv -f /your/preferred/path/confluent-kafka-demo/data/[yourFile.csv] -c /your/preferred/path/confluent-kafka-demo/spool_conf.tmp
 
 ```
 > Don't forget to replace the path to your **spool_conf.tmp** and **your CSV file** in the above commands.
@@ -140,8 +168,11 @@ KAFKA_DIR=/your/preferred/path/confluent-kafka-demo
 ```
 After that, execute the script for installing the demo :
 ```bash
-$ ./scripts/demo-install.sh
+$ sudo ./scripts/demo-install.sh
 ```
+> You might need to give execution rights on 'demo-install.sh':  
+`sudo chmod u+x /your/preferred/path/confluent-kafka-demo/scripts/demo-install.sh`
+
 This script will add the connectors for referential and streaming data. The connectors will transform the CSV files into kafka messages and add them to **'aircraft'** and **'traffic'** topics. 
 
 Intermediate KSQL streams and tables are also created in order to rekey messages by partioning. After that, a new stream **TRAFFIC_ENRICHED** and its corresponding topic are created based on the jointure of the **'AIRCRAFT_TABLE_KEY'** table and the **'TRAFFIC_KEY'** stream.
@@ -156,11 +187,11 @@ $ ksql
 
 Select the stream **TRAFFIC_ENRICHED** created with the previous scrip **demo-install.sh**. 
 
+> If you want to select all data from the beginning, before executing the above command, <br> run 
+ **SET 'auto.offset.reset'='earliest';**  in the KSQL terminal. Then :
 ```sql
 $ SELECT * FROM TRAFFIC_ENRICHED;
 ```
-> If you want to select all data from the beginning, before executing the above command, <br> run 
- **SET 'auto.offset.reset'='earliest';**  in the KSQL terminal.
 
 Open another terminal, and place a new streaming traffic data with the following command. You will see in the terminal running KSQL that there is a new input data.
 
