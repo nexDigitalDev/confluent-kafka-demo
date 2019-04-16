@@ -100,7 +100,8 @@ $ mkdir /your/preferred/path/confluent-kafka-demo/logs
 
 #### Schema Generation
 
-This part is **optional** if you want to know how to generate Avro Schema which is used when adding the connectors in the next part. 
+This part is **optional**  
+Read it if you want to know how to generate Avro Schema which are used when adding the connectors in the next part. 
 
 **This requires that you installed the spooldir connector with git**.  
 However, if you installed the connector with Confluent Hub, you can either define the Avro schema manually or looking for online Json - Avro converter.
