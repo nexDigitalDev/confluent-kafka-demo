@@ -109,4 +109,35 @@ log4j.logger.kafka.authorizer.logger="DEBUG, authorizerAppender"
 Copy the Broker JAAS File to **/etc/kafka** then pass its name as a JVM parameter before starting Kafka Brokers:
 
 ```bash
+$ cp /your/preferred/path/confluent-kafka-demo/security/broker_jaas.conf /etc/kafka/
+
+$ export KAFKA_OPTS="-Djava.security.auth.login.config=/etc/kafka/broker_jaas.conf"
+
+$ confluent start kafka
 ```
+
+# Test with Console Clients
+
+Now let's test the above configuration with console producer and console consumer.
+
+Try to enter some message with console producer by passing its SASL_SSL configuration file **/your/preferred/path/confluent-kafka-demo/security/producer_sasl.properties** :
+
+```bash
+$ kafka-console-producer \
+--broker-list localhost:9093 \
+--topic sasl-topic \
+--producer.config /your/preferred/path/confluent-kafka-demo/security/producer_sasl.properties
+```
+> Don't forget to modify the path !
+
+Once you produced some message, use the console consumer to confirm that your messages was successfully created in Kafka :
+```bash
+$ kafka-console-consumer \
+--consumer.config /your/preferred/path/confluent-kafka-demo/security/consumer_sasl.properties \
+--from-beginning \
+--topic sasl-topic \
+--bootstrap-server localhost:9093
+```
+> Don't forget to modify the path !
+
+The basic Kafka Broker - Client communication is secured now. This is the common configuration for Kafka clients, based on that you can configure clients like Kafka Connect, KSQL, Control Center, Schema Registry, REST Proxy, etc.

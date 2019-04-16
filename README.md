@@ -242,7 +242,7 @@ Normally, in the KSQL Terminal, you will see that the same stream traffic has no
 
 ## Console Producer and Consumer 
 
-Instead of using KSQL, you can either use the console producer or consumer to consume or produce messages. If you use console producer, be aware that your input data has the same data structure as defined in the connector configuration file. 
+Instead of using KSQL, you can either use the console producer or consumer to produce or consume messages. If you use console producer, be aware that your input data has the same data structure as defined in the connector configuration file. 
 
 For example, you can use the console consumer to observe the messages of **TRAFFIC_ENRICHED** : 
 
