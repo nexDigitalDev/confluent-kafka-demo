@@ -25,7 +25,11 @@ Open Soap UI and create a new SOAP Project using the wsdl file at **/your/prefer
 
 Right-click on **Hello_Binding** and Generate SOAP Mock Service with **path** configured to **/SayHello** on the port **9099**.
 
-Click on the Mock Service that you created and run it. 
+![Soap UI](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/mule/img/soapui.PNG?raw=true)
+
+Double-click on the Mock Service that you created and run it. 
+
+![Run Soap Service](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/mule/img/runsoap.png?raw=true)
 
 Let it run until the end of this tutorial.
 

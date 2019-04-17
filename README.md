@@ -17,7 +17,7 @@ The example this demo gives consists in activating 2 SpoolDir connectors which w
 ## Requirement
 
 - For system requirements, please refer to this [page](https://docs.confluent.io/current/installation/system-requirements.html).
-- Java 1.8 is required
+- Java JDK 1.8 is required
 
 
 ## Confluent Installation
@@ -145,7 +145,7 @@ If you installed the connector with Git, modify the **plugin.path** configuratio
 ```properties
 plugin.path=/usr/share/java, /your/preferred/path/confluent-kafka-demo/plugins/kafka-connect-spooldir/target/kafka-connect-target/usr/share/kafka-connect/
 ```
-> Don't forget to replace the paths in each of the lines above by the one you set instead of **/your/preferred/path/**.
+> Don't forget to replace the paths in each of the files mentioned above by the one you set instead of **/your/preferred/path/**.
 
 After modifying configuration files, restart confluent :
 ```bash
@@ -158,7 +158,9 @@ Navigate to the **/your/preferred/path/confluent-kafka-demo/plugin/kafka-connect
 ```bash
 $ export CLASSPATH="$(find target/kafka-connect-target/usr/share/kafka-connect/kafka-connect-spooldir/ -type f -name '*.jar' | tr '\n' ':')"
 
-$ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator -t csv -f /your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_0.csv -c /your/preferred/path/confluent-kafka-demo/spool_conf.tmp
+$ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerator \
+-t csv -f /your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_0.csv \
+-c /your/preferred/path/confluent-kafka-demo/spool_conf.tmp
 
 ```
 > Don't forget to replace the path to your **spool_conf.tmp** and **aircraft_airbus_airfrance_0.csv** files in the above commands.
@@ -222,7 +224,8 @@ $ SELECT * FROM TRAFFIC_ENRICHED;
 Now, let's see what happens if you add new input data to this stream. Keep this KSQL terminal running and in another terminal execute the following command :
 
 ```bash
-$ cp /your/preferred/path/confluent-kafka-demo/data/Flight_Log_Paris_demoUpdateBEFORE02fev_2019.csv /your/preferred/path/confluent-kafka-demo/source/
+$ cp /your/preferred/path/confluent-kafka-demo/data/Flight_Log_Paris_demoUpdateBEFORE02fev_2019.csv \
+/your/preferred/path/confluent-kafka-demo/source/
 ```
 > Don't forget to replace the path in the above command !
 
@@ -233,9 +236,11 @@ You will see in the terminal running KSQL that there is a new input data.
 Now let's update a referential data and see if the new input stream will be updated.
 
 ```bash
-$ cp /your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_demoUpdate.csv /your/preferred/path/confluent-kafka-demo/source/
+$ cp /your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_demoUpdate.csv \
+/your/preferred/path/confluent-kafka-demo/source/
 
-$ cp /your/preferred/path/confluent-kafka-demo/data/Flight_Log_Paris_demoUpdateAFTER02fev_2019.csv /your/preferred/path/confluent-kafka-demo/source/
+$ cp /your/preferred/path/confluent-kafka-demo/data/Flight_Log_Paris_demoUpdateAFTER02fev_2019.csv \
+/your/preferred/path/confluent-kafka-demo/source/
 ```
 
 Normally, in the KSQL Terminal, you will see that the same stream traffic has now different referential data.
@@ -247,7 +252,12 @@ Instead of using KSQL, you can either use the console producer or consumer to pr
 For example, you can use the console consumer to observe the messages of **TRAFFIC_ENRICHED** : 
 
 ```bash
-$ kafka-console-consumer --bootstrap-server localhost:9092 --topic TRAFFIC_ENRICHED --from-beginning --formatter kafka.tools.DefaultMessageFormatter --property print.key=true --property print.value=true  --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+$ kafka-console-consumer --bootstrap-server localhost:9092 \
+--topic TRAFFIC_ENRICHED --from-beginning \
+--formatter kafka.tools.DefaultMessageFormatter \
+--property print.key=true --property print.value=true  \
+--property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer \
+--property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 ```
 
 ## MuleSoft Consumer
