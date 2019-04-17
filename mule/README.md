@@ -55,7 +55,8 @@ Once the kafka connector is added to the project, drag the **Message Consumer** 
 
 ![Flow 1](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/mule/img/flow1.PNG?raw=true)
 
-Click on this **Message Consumer** connector in the flow, and in **General > Basic Settings** click on the **"+"** button to add a connector configuration for the Apache Kafka Consumer.
+Click on this **Message Consumer** connector in the flow, and in **Mule Properties > General > Basic Settings** click on the **"+"** button to add a connector configuration for the Apache Kafka Consumer.
+> If **Mule Properties** view does not show properly, it may be some UI issues in Anypoint Studio on Ubuntu. To solve that problem please refer to this [page](https://www.avioconsulting.com/blog/ui-issue-anypoint-studio-ubuntu).
 
 Select **Kafka Basic Consumer Connection** for Connection field and fill other fields as the following image shows :
 > If you want to connect to a secured Kafka Cluster, instead of using **Kafka Basic Consumer Connection** you can choose the adapted connexion mode.
