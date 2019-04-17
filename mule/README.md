@@ -18,12 +18,12 @@ Before starting the guide, make sure that :
 
 ## Configure SOAP UI
 
-This part is **optional** if you have already a running Soap Server. If you want to set up a mock web service with Soap UI, please do this section.
+This part is **optional** if you already have a running Soap Server. If you want to set up a mock web service with Soap UI, please follow this section.
 
 Open Soap UI and create a new SOAP Project using the wsdl file at **/your/preferred/path/confluent-kafka-demo/mule/airbus-hello.wsdl**.
 > You can also use another wsdl file just make sure that further bellow your soap request matches to the format defined in this wsdl file.
 
-Right-click on **Hello_Binding** and create a MockService with **path** configured to **/SayHello** on the port **9099**.
+Right-click on **Hello_Binding** and Generate SOAP Mock Service with **path** configured to **/SayHello** on the port **9099**.
 
 Click on the Mock Service that you created and run it. 
 
