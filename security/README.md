@@ -29,7 +29,9 @@ Execute the **certs-create.sh** script which creates certificates as root:
 ```bash
 $ sudo /your/preferred/path/confluent-kafka-demo/security/certs-create.sh
 ```
-> Don't forget to modify the path !
+> Don't forget to modify the path !  
+> You might need to give execution rights on the script, use this command:  
+`sudo chmod 751 /your/prefered/path/confluent-kafka-demo/security/certs-create.sh`
 
 
 
@@ -51,7 +53,7 @@ quorum.cnxn.threads.size=20
 Before starting ZooKeeper, copy the ZooKeeper JAAS file to **/etc/kafka/** and pass its name as a JVM parameter :
 
 ```bash
-$ cp /your/preferred/path/confluent-kafka-demo/security/zookeeper_jaas.conf /etc/kafka/
+$ sudo cp /your/preferred/path/confluent-kafka-demo/security/zookeeper_jaas.conf /etc/kafka/
 
 $ export KAFKA_OPTS="-Djava.security.auth.login.config=etc/kafka/zookeeper_jaas.conf"
 
@@ -64,7 +66,7 @@ $ confluent start zookeeper
 Modify the broker configuration file **/etc/kafka/server.properties** by adding the following :
 
 ```properties
-######################## SECURITY  CONFIGURATION #################
+############################# Security Configuration ################################
 
 listeners=SASL_SSL://localhost:9093,PLAINTEXT://localhost:9092
 advertised.listeners=SASL_SSL://localhost:9093,PLAINTEXT://localhost:9092
@@ -317,7 +319,7 @@ Now try to authenticate as a non-super user **test** with the following commands
 
 ```bash
 $ kafka-console-producer \
---broker-list localhost:9093\
+--broker-list localhost:9093 \
 --topic sasl-topic \
 --producer.config /your/preferred/path/confluent-kafka-demo/security/test-client_sasl.properties
 ```
@@ -331,7 +333,7 @@ $ kafka-acls --authorizer-properties zookeeper.connect=localhost:2181 --add --al
 User:test --operation WRITE --topic sasl-topic
 ```
 
-By the same way, if you want to give the read right to this user, execute the following command:
+If you also want to give the read right to this user, execute the following command:
 
 ```bash
 kafka-acls --authorizer-properties zookeeper.connect=localhost:2181 --add --allow-principal \
