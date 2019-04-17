@@ -24,7 +24,7 @@ Open Soap UI and create a new SOAP Project using the wsdl file at **/your/prefer
 
 Click on **Hello_Binding** and create a MockService with **path** configured to **/SayHello** on the port **9099**.
 
-![Soap UI](img/soapui.PNG)
+<img align=center>![Soap UI](img/soapui.PNG)</img>
 
 Click on the Mock Service that you created and run it.
 
