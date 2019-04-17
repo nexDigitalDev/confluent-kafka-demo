@@ -29,7 +29,7 @@ Right-click on **Hello_Binding** and create a MockService with **path** configur
 
 Double-click on the Mock Service that you created and run it. 
 
-![Run Soap Service](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/mule/img/runsoap.PNG?raw=true)
+![Run Soap Service](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/mule/img/runsoap.png?raw=true)
 
 Let it run until the end of this tutorial.
 
