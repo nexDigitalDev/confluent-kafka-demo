@@ -8,9 +8,10 @@ This demo contains several parts:
 
     - Confluent installation and configuration
     - Connectors installation and configuration
-    - KSQL configuration
-    - MuleSoft configuration
-    - Security configuration.
+    - KSQL
+    - MuleSoft Kafka connector
+    - Security configuration
+    - Kubernetes deployment
 
 The example this demo gives consists in activating 2 SpoolDir connectors which will transform a file located in a defined source directory into Kafka messages.
 
@@ -101,7 +102,7 @@ You can either download the connector with Confluent Hub using the following com
 ```bash
 $ sudo confluent-hub install jcustenborder/kafka-connect-spooldir:1.0.37
 ```
-Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/plugin/kafka-connect-spooldir** with git (you will need **Maven** and a **JDK**) :
+Or download manually the connector in **/your/preferred/path/confluent-kafka-demo/plugins/kafka-connect-spooldir** with git (you will need **Maven** and a **JDK**) :
 
 > `mvn` comes from the Maven package, you can install it with the following command `sudo apt-get install maven -y`
 
@@ -139,7 +140,7 @@ finished.path=/your/preferred/path/confluent-kafka-demo/finished
 error.path=/your/preferred/path/confluent-kafka-demo/error
 csv.first.row.as.header=true
 ```
-If you installed the connector with Git, modify the **plugin.path** configuration in those four files : 
+If you installed the connector with Git, you have to manually modify the **plugin.path** configuration in those four files : 
 <br>- **/etc/kafka/connect-distributed.properties** <br>- **/etc/kafka/connect-standalone.properties** <br>- **/etc/schema-registry/connect-avro-distributed.properties**
 <br>- **/etc/schema-registry/connect-avro-standalone.properties**
 ```properties
@@ -154,7 +155,7 @@ $ confluent start
 ```
 
 
-Navigate to the **/your/preferred/path/confluent-kafka-demo/plugin/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_0.csv** to generate the Avro Schema based on the data in this file:
+Navigate to the **/your/preferred/path/confluent-kafka-demo/plugins/kafka-connect-spooldir** and execute the following commands on the file **/your/preferred/path/confluent-kafka-demo/data/aircraft_airbus_airfrance_0.csv** to generate the Avro Schema based on the data in this file:
 ```bash
 $ export CLASSPATH="$(find target/kafka-connect-target/usr/share/kafka-connect/kafka-connect-spooldir/ -type f -name '*.jar' | tr '\n' ':')"
 
@@ -164,6 +165,8 @@ $ kafka-run-class com.github.jcustenborder.kafka.connect.spooldir.SchemaGenerato
 
 ```
 > Don't forget to replace the path to your **spool_conf.tmp** and **aircraft_airbus_airfrance_0.csv** files in the above commands.
+
+> Note that **value.schema** and **key.schema** returned in the response are useful to define the connector configuration file **/your/preferred/path/confluent-kafka-demo/scripts/csv-source-aircraft.config** used further bellow. If you are curious, you can take a look on this configuration file. Later, be aware with escape characters if you want to create your own connctor configuration file.
 
 ## Set up the Demo
 
@@ -260,10 +263,16 @@ $ kafka-console-consumer --bootstrap-server localhost:9092 \
 --property value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
 ```
 
+Now test this configuration as you want by making your own connectors, files, etc. You can either copy data in the **data** directory to **source** and observe what happens on topics, KSQL streams and tables. Make sure that you don't copy the same file twice. If you want to use the same file, juste rename it with respct to the name format defined in the connector configuration files.
+
 ## MuleSoft Consumer
 Please refer to the this [page](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/mule/README.md) to configure the MuleSoft Consumer.
 
 
-## Configuring Security
+## Security
 
 Please refer to this [page](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/security/README.md) to set up the security.
+
+## Kubernetes
+
+Please refer to this [page](https://github.com/nexDigitalDev/confluent-kafka-demo/blob/master/k8s/README.md) to deploy this example on Kubernetes.
