@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ksql-client
+  namespace: confluent
+spec:
+  containers:
+  - name: ksql-client
+    image: confluentinc/ksql-cli:5.1.2
+    command:
+    - sh
+    - -c
+    - "exec tail -f /dev/null"
